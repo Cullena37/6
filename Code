@@ -1,0 +1,41 @@
+from flask import Flask, request, render_template
+from twilio.rest import Client
+
+app = Flask(__name__)
+
+# Configura le credenziali Twilio
+account_sid = 'IL_TUO_ACCOUNT_SID'
+auth_token = 'IL_TUO_AUTH_TOKEN'
+twilio_phone_number = 'IL_TUO_NUMERO_TWILIO'
+
+# Inizializza il client Twilio
+client = Client(account_sid, auth_token)
+
+# Pagina principale
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+# Gestisce l'invio di SMS
+@app.route('/invia_sms', methods=['POST'])
+def invia_sms():
+    try:
+        # Ottieni i dati dal modulo HTML
+        destinatario = request.form['destinatario']
+        messaggio = request.form['messaggio']
+
+        # Invia l'SMS utilizzando Twilio
+        message = client.messages.create(
+            body=messaggio,
+            from_=twilio_phone_number,
+            to=destinatario
+        )
+
+        # Mostra il risultato sull'interfaccia utente
+        return f'Messaggio inviato con successo a {destinatario}, SID: {message.sid}'
+    except Exception as e:
+        # Gestisce eventuali errori
+        return f'Errore nell\'invio dell\'SMS: {str(e)}'
+
+if __name__ == '__main__':
+    app.run(debug=True)
