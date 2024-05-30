@@ -11,11 +11,6 @@ twilio_phone_number = 'IL_TUO_NUMERO_TWILIO'
 # Inizializza il client Twilio
 client = Client(account_sid, auth_token)
 
-# Pagina principale
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 # Gestisce l'invio di SMS
 @app.route('/invia_sms', methods=['POST'])
 def invia_sms():
